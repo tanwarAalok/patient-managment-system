@@ -1,0 +1,11 @@
+### Update patient entity
+PUT http://localhost:4000/patients/f957b42b-ff4d-489f-ac0c-35d66c1c4304
+Content-Type: application/json
+
+{
+  "name": "Aalok Tanwar updated",
+  "email": "aalok@gmail.com",
+  "address": "Gurugram, Haryana",
+  "dateOfBirth": "1995-09-09"
+}
+###
