@@ -54,14 +54,6 @@ public class PatientService {
             String sortBy,
             String searchBy
     ) {
-        log.info("[REDIS]: Cache miss - fetching from DB");
-
-        try{
-            Thread.sleep(2000);
-        } catch (InterruptedException e){
-            log.error(e.getMessage());
-        }
-
         Pageable pageable = PageRequest.of(page - 1, size,
                 sort.equalsIgnoreCase("desc")
                         ? Sort.by(sortBy).descending()
