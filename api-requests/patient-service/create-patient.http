@@ -1,10 +1,11 @@
 ### Create a new patient entity
 POST http://localhost:4004/api/patients
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-    "name": "Aalok kafka test 8",
-    "email": "kafka8@zoho.com",
+    "name": "Aalok kafka test 12",
+    "email": "kafka12@zoho.com",
     "address": "124 main street",
     "dateOfBirth": "2002-09-09",
     "registeredDate": "2025-12-12"
