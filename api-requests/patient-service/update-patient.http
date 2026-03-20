@@ -1,11 +1,11 @@
 ### Update patient entity
-PUT http://localhost:4000/patients/f957b42b-ff4d-489f-ac0c-35d66c1c4304
+PUT http://localhost:4000/patients/123e4567-e89b-12d3-a456-426614174000
 Content-Type: application/json
 
 {
-  "name": "Aalok Tanwar updated",
-  "email": "aalok@gmail.com",
-  "address": "Gurugram, Haryana",
+  "name": "John Doe UPDATED",
+  "email": "john.doe.updated@example.com",
+  "address": "123 main street",
   "dateOfBirth": "1995-09-09"
 }
 ###
