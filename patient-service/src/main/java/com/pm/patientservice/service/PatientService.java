@@ -96,7 +96,7 @@ public class PatientService {
                 newPatient.getEmail()
         );
 
-        kafkaProducer.sendEvent(newPatient);
+        kafkaProducer.sendPatientCreatedEvent(newPatient);
 
         return PatientMapper.toPatientResponseDTO(newPatient);
     }
@@ -116,6 +116,9 @@ public class PatientService {
         patient.setDateOfBirth(LocalDate.parse(patientRequestDTO.getDateOfBirth()));
 
         Patient updatedPatient = patientRepository.save(patient);
+
+        kafkaProducer.sendPatientUpdatedEvent(updatedPatient);
+
         return PatientMapper.toPatientResponseDTO(updatedPatient);
     }
 
