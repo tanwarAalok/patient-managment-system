@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="auth-service" />
         <module name="appointment-service" />
+        <module name="infrastructure" />
         <module name="analytics-service" />
         <module name="api-gateway" />
         <module name="patient-service" />
