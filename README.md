@@ -59,16 +59,6 @@ Because each module is independent, start the services from their own folders.
 6. Start `analytics-service`
 7. Start `api-gateway`
 
-### Example commands on Windows PowerShell
-
-```powershell
-Set-Location .\auth-service; .\mvnw.cmd spring-boot:run
-Set-Location ..\patient-service; .\mvnw.cmd spring-boot:run
-Set-Location ..\appointment-service; .\mvnw.cmd spring-boot:run
-Set-Location ..\billing-service; .\mvnw.cmd spring-boot:run
-Set-Location ..\analytics-service; .\mvnw.cmd spring-boot:run
-Set-Location ..\api-gateway; .\mvnw.cmd spring-boot:run
-```
 
 ## Useful request samples
 
