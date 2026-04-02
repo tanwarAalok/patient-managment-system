@@ -91,7 +91,7 @@ public class LocalStack extends Stack {
                 List.of(4000),
                 patientServiceDb,
                 Map.of(
-                        "BILLING_SERVICE_ADDRESS", "host.docker.internal", //billing-service.patient-management.local
+                        "BILLING_SERVICE_ADDRESS", "billing-service.patient-management.local",
                         "BILLING_SERVICE_GRPC_PORT", "9001"
                 )
         );
@@ -172,6 +172,9 @@ public class LocalStack extends Stack {
 
         Map<String, String> envVars = new HashMap<>();
         envVars.put("SPRING_KAFKA_BOOTSTRAP_SERVERS", "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512");
+        envVars.put("SPRING_CACHE_TYPE", "redis");
+        envVars.put("SPRING_DATA_REDIS_HOST", elastiCacheCluster.getAttrRedisEndpointAddress());
+        envVars.put("SPRING_DATA_REDIS_PORT", elastiCacheCluster.getAttrRedisEndpointPort());
 
         if(additionalEnvVars != null){
             envVars.putAll(additionalEnvVars);
@@ -199,6 +202,10 @@ public class LocalStack extends Stack {
                 .cluster(ecsCluster)
                 .taskDefinition(taskDefinition)
                 .assignPublicIp(false)
+                .cloudMapOptions(CloudMapOptions.builder()
+                        .name(imageName)
+                        .dnsRecordType(DnsRecordType.A)
+                        .build())
                 .serviceName(imageName)
                 .build();
     }
@@ -221,8 +228,8 @@ public class LocalStack extends Stack {
         return CfnCluster.Builder
                 .create(this, "MskCluster")
                 .clusterName("kafka-cluster")
-                .kafkaVersion("2.8.0")
-                .numberOfBrokerNodes(1)
+                .kafkaVersion("3.6.0")
+                .numberOfBrokerNodes(2)
                 .brokerNodeGroupInfo(CfnCluster.BrokerNodeGroupInfoProperty.builder()
                         .instanceType("kafka.m5.large")
                         .clientSubnets(vpc.getPrivateSubnets().stream().map(ISubnet::getSubnetId).collect(Collectors.toList()))
@@ -252,7 +259,7 @@ public class LocalStack extends Stack {
                         .image(ContainerImage.fromRegistry("api-gateway"))
                         .environment(Map.of(
                                 "SPRING_PROFILES_ACTIVE", "prod",
-                                "AUTH_SERVICE_URL", "http://host.docker.internal:4005",  //http://auth-service.patient-management.local:4005
+                                "AUTH_SERVICE_URL", "http://auth-service.patient-management.local:4005",
                                 "REDIS_HOST", elastiCacheCluster.getAttrRedisEndpointAddress(),
                                 "REDIS_PORT", elastiCacheCluster.getAttrRedisEndpointPort()
                         ))
@@ -311,7 +318,6 @@ public class LocalStack extends Stack {
                 .build();
     }
 
-
     private ApplicationLoadBalancedFargateService createGrafanaService(){
         FargateTaskDefinition taskDefinition = FargateTaskDefinition.Builder
                 .create(this, "GrafanaService")
@@ -326,15 +332,13 @@ public class LocalStack extends Stack {
                         .build()))
                 .build());
 
-        ApplicationLoadBalancedFargateService service = ApplicationLoadBalancedFargateService.Builder
+        return ApplicationLoadBalancedFargateService.Builder
                 .create(this, "GrafanaUIService")
                 .taskDefinition(taskDefinition)
                 .publicLoadBalancer(true)
                 .listenerPort(3000)
                 .desiredCount(1)
                 .build();
-
-        return service;
     }
 
     public static void main(final String[] args) {
