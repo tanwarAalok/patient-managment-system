@@ -1,8 +1,19 @@
 # Patient Management System
 
+![Java](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?logo=springboot&logoColor=white) ![Kafka](https://img.shields.io/badge/Kafka-231F20?logo=apachekafka&logoColor=white) ![gRPC](https://img.shields.io/badge/gRPC-244c5a?logo=grpc&logoColor=white) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white) ![AWS CDK](https://img.shields.io/badge/AWS_CDK-232F3E?logo=amazonwebservices&logoColor=white) ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?logo=prometheus&logoColor=white)
+
 A multi-service patient management platform built with **Java 21**, **Spring Boot**, **Maven**, **PostgreSQL**, **Kafka**, **Redis**, and **AWS/CDK + LocalStack** for local infrastructure simulation.
 
-![img.png](img.png)
+![Architecture](img.png)
+
+## Highlights
+
+- **API gateway** (Spring Cloud Gateway) validates JWTs on protected routes and applies Redis-backed rate limiting.
+- **Synchronous calls over gRPC:** `patient-service` creates billing accounts in `billing-service`, protected by a Resilience4j circuit breaker, retries and a fallback.
+- **Asynchronous events over Kafka:** patient events from `patient-service` are consumed by the analytics, billing and appointment services.
+- **Redis caching** in `patient-service`, plus custom metrics exposed to Prometheus through Spring Boot Actuator.
+- **Infrastructure as code:** an AWS CDK stack (VPC, ECS Fargate services, RDS Postgres, MSK Kafka) deployable to LocalStack for a full local cloud.
+- **Integration tests** that exercise the system end to end through the gateway.
 
 This repository is organized as **separate Maven projects per service** rather than a single root aggregator build.
 
